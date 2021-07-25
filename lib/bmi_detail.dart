@@ -42,7 +42,7 @@ class _BmiDetailState extends State<BmiDetail> {
               runSpacing: 20,
               children: [
                 Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2"),
-                Text("Kilonuza göre Sağlıklı Kilo Değerleri : 42 kg - 57 kg"),
+                Text("Kilonuza göre sağlıklı Kilo değerleri : 42 kg - 57 kg"),
                 Text("Sağlıklı bir vücudunuz var. Sağlıklı Günler !"),
               ],
             ),
