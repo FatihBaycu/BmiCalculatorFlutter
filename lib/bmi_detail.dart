@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BmiDetail extends StatefulWidget {
-  const BmiDetail({Key? key}) : super(key: key);
+  String? weightMessage;
+  String? bmiNumber;
+  String? idealWeight;
+  String? isMyWeightNormal;
+
+ // const BmiDetail({Key? key}) : super(key: key);
+
+  BmiDetail({this.weightMessage, this.bmiNumber, this.idealWeight,this.isMyWeightNormal});
 
   @override
   _BmiDetailState createState() => _BmiDetailState();
@@ -42,24 +49,12 @@ class _BmiDetailState extends State<BmiDetail> {
               runSpacing: 20,
               children: [
                 Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2"),
-                Text("Kilonuza göre sağlıklı Kilo değerleri : 42 kg - 57 kg"),
-                Text("Sağlıklı bir vücudunuz var. Sağlıklı Günler !"),
+                Text("Kilonuza göre sağlıklı Kilo değerleri : ${widget.idealWeight}"),
+                Text(widget.weightMessage!),
               ],
             ),
           );
   }
-
-
-
-
-
-
-
-
-
-
-
-
 
   AppBar buildAppBar() {
     return AppBar(
@@ -104,15 +99,17 @@ class _BmiDetailState extends State<BmiDetail> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text( "VKİ' in", style: TextStyle(fontSize: 30, color: Colors.purple.shade900),),
-                    Text("22.4",style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold,color: Colors.purple.shade800),),
+                    Text(widget.bmiNumber!,style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold,color: Colors.purple.shade800),),
                     Text("kg/m2",style: TextStyle(color: Colors.purple.shade300),),
-                    RichText(
-                      text: TextSpan(
-                          style: TextStyle(fontSize: 14, color: Colors.black),
-                          children: [
-                            TextSpan(text: "Kilonuz",style: TextStyle(fontSize: 20,color: Colors.purple.shade300)),
-                            TextSpan(text: " Normal",style: TextStyle(fontSize: 20,color: Colors.green)),
-                          ]),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                            style: TextStyle(fontSize: 14, color: Colors.black),
+                            children: [
+                              TextSpan(text: "Kilonuz ",style: TextStyle(fontSize: 20,color: Colors.purple.shade300)),
+                              TextSpan(text: widget.isMyWeightNormal,style: TextStyle(fontSize: 20,color: Colors.green)),
+                            ]),
+                      ),
                     ),
                   ],
                 ),

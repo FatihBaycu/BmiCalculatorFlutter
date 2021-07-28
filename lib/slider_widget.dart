@@ -6,12 +6,14 @@ class SliderWidget extends StatefulWidget {
   final int min;
   final int max;
   final fullWidth;
+  double value;
 
   SliderWidget(
       {this.sliderHeight = 48,
         this.max = 10,
         this.min = 0,
         this.fullWidth = false,
+        required this.value,
       });
 
   @override
@@ -19,11 +21,12 @@ class SliderWidget extends StatefulWidget {
 }
 
 class _SliderWidgetState extends State<SliderWidget> {
-
-  //double _value = 0;
-  double newVal=0;
+  late double newVal;
+  double _value = 0;
   @override
   Widget build(BuildContext context) {
+    newVal=widget.value;
+
     double paddingFactor = .2;
 
     if (this.widget.fullWidth) paddingFactor = .3;
@@ -84,10 +87,11 @@ class _SliderWidgetState extends State<SliderWidget> {
                     inactiveTickMarkColor: Colors.red.withOpacity(.7),
                   ),
                   child: Slider(
-                      value: newVal,
+                      value: _value,
                       onChanged: (value) {
                         setState(() {
-                          newVal = value;
+                          _value = value;
+                          newVal=value;
                         });
                       }),
                 ),

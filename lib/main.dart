@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'bmi_detail.dart';
-import 'custom_slider_thumb_circle.dart';
 
 void main() {runApp(MyApp());}
 
@@ -23,57 +22,49 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key,}) : super(key: key);
 
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-
-  bool isBlur=true;
-
+    bool isBlur=true;
   opacitySwap() {  isBlur = !isBlur;}
-
   double width=170;
   double weight=50;
-
   double newValue=0;
 
+  var staticValues=MyValues();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       appBar: buildAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Wrap(
-            runSpacing: 30,
-            children: <Widget>[
-              Padding(padding: const EdgeInsets.all(10.0), child: Text(MyValues.vkiNedir,style: TextStyle(fontSize: 14,color: Colors.blueGrey.shade400),),),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildGestureDetectorMan(),
-                  buildGestureDetectorVoman(),
-                ],
-              ),
-              SizedBox(height: 50,),
-              buildContainer(),
-              buildContainerWidth(),
+      body: buildBody(),
+    );
+  }
 
-              SizedBox(
-                width: Get.width,
-                child: SliderWidget(
-                  fullWidth:false,
-                  min: 10,
-                  max: 250,
-                  sliderHeight: 50,),
-              ),
-
-              buildButton(),
-            ],
-          ),
+  SingleChildScrollView buildBody() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Wrap(
+          runSpacing: 30,
+          children: <Widget>[
+            Padding(padding: const EdgeInsets.all(10.0), child: Text(MyValues.vkiNedir,style: TextStyle(fontSize: 14,color: Colors.blueGrey.shade400),),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                buildGestureDetectorMan(),
+                buildGestureDetectorVoman(),
+              ],
+            ),
+            SizedBox(height: 50,),
+            buildContainer(),
+            buildContainerWidth(),
+            // SizedBox(width: Get.width,child:
+            //   SliderWidget(fullWidth:false,min: 0,max: 250,sliderHeight: 50,value: newValue,),),
+            buildButton(),
+          ],
         ),
       ),
     );
@@ -88,8 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(changeColor()),
                   ),
                   onPressed: (){
-                    Get.off(()=>BmiDetail());
-
+                    isMyWeightNormal(26);
+                     Get.off(()=>BmiDetail(
+                       weightMessage: getBmiMessage(differentCalculateBmi(width: width,weight: weight,gender: isBlur)),
+                      bmiNumber:differentCalculateBmi(width: width,weight: weight,gender: isBlur).toString(),
+                      idealWeight: calculateIdealWeight(gender: isBlur,width: width),
+                      isMyWeightNormal: isMyWeightNormal(differentCalculateBmi(width: width,weight: weight,gender: isBlur)),
+                     ));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -147,23 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
 
-                    Expanded(
-                      flex:5,
-                      child: Slider(
-                        value: width,
-                        min: 90,
-                        max: 220,
-                        divisions: 130,
-                        activeColor:changeColor(),
-                        onChanged: (double value) {
-                          setState(() {
-                            width = value;
-                          });
-                        },
-                        label: width.roundToDouble().toString(),
-
-                      ),
-                    ),
+                    Expanded( flex:5,child:
+                      Slider(value: width,min: 90, max: 220, divisions: 130, activeColor:changeColor(),
+                        onChanged: (double value)=>setState(()=>width = value),
+                        label: width.roundToDouble().toString(),),),
                   ],
                 ),
               );
@@ -173,23 +156,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
                 height: 75,
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  border:Border.all(color: Colors.black12,width: 3) ,
-                  borderRadius: new BorderRadius.all(Radius.circular(20.0),
-                  ),),
+                  color: Colors.white, border:Border.all(color: Colors.black12,width: 3),
+                  borderRadius: new BorderRadius.all(Radius.circular(20.0),),),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
-                    Expanded(
-                      flex:1,
-                      child: Column(
+                    Expanded(flex:1, child:
+                    Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Icon(Icons.add_moderator,color: changeColor(),),
-                          RichText(
-                            text: TextSpan(
+                          RichText(text: TextSpan(
                                 style: TextStyle(fontSize:14,color: changeColor(),),
                                 children: [
                                   TextSpan(text: "Kilo",style: TextStyle(color: Colors.purple)),
@@ -199,22 +177,10 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     ),
-
-                    Expanded(
-                      flex:5,
-                      child: Slider(
-                        value: weight,
-                        min: 30,
-                        max: 200,
-                        divisions: 200,
-                        activeColor:changeColor(),
-                        onChanged: (double value) {
-                          setState(() {
-                            weight = value;
-                          });
-                        },
-                        label: weight.roundToDouble().toString(),
-
+                    Expanded(flex:5, child:
+                      Slider(value: weight, min: 30, max: 200, divisions: 200, activeColor:changeColor(),
+                      onChanged: (double value)=>setState(()=>weight = value),
+                      label: weight.roundToDouble().toString(),
                       ),
                     ),
                   ],
@@ -223,39 +189,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   GestureDetector buildGestureDetectorVoman() {
-    return GestureDetector(
-                    child: Container(
-                      width: Get.width * 0.4,
-                      height: Get.height * 0.3,
-                      child: Opacity(
-                          opacity: !isBlur? 1.0 : 0.5,
-                          child: Image.asset("assets/images/voman.png")
-                      ),
-                    ),
-                    onTap: (){
-                      setState(() {
-                        opacitySwap();
-                      });
-                    },
-                  );
+    return GestureDetector(child:
+        Container(width: Get.width * 0.4, height: Get.height * 0.3, child:
+          Opacity(opacity: !isBlur? 1.0 : 0.5, child:
+            Image.asset("assets/images/voman.png")),),onTap: ()=>setState(()=>opacitySwap()),
+    );
   }
 
   GestureDetector buildGestureDetectorMan() {
     return GestureDetector(
-                    child: Container(
-                      width: Get.width * 0.4,
-                      height: Get.height * 0.3,
-                      child: Opacity(
-                          opacity: isBlur ? 1.0 : 0.5,
-                          child: Image.asset("assets/images/man.png")
-                      ),
-                    ),
-                    onTap: (){
-                      setState(() {
-                        opacitySwap();
-                      });
-                    },
-                  );
+      child: Container(width: Get.width * 0.4, height: Get.height * 0.3, child:
+       Opacity(opacity: isBlur ? 1.0 : 0.5,child:
+        Image.asset("assets/images/man.png")),), onTap: ()=>setState(()=>opacitySwap()));
   }
 
   Color changeColor(){
@@ -268,31 +213,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var result = number + 2.3 * ((width! / 2.54) - 60);
     String value = result.toString();
+    print("calculateIdealWeight: "+value.substring(0, 2));
     return value.substring(0, 2);
   }
 
-  String calculateBmi({bool? gender, double? width, double? weight}) {
+  double calculateBmi({bool? gender, double? width, double? weight}) {
     int number = 50;
     number = gender == true ? number = 50 : 45;
 
-    double result = weight! / (width! * 2);
+    double result = weight! / (width! * width);
     String value = result.toString();
+    double newValue=double.parse(value.substring(3));
+    print("calculateBmi: "+value);
+    return newValue;
+    //return value.substring(2, 4);
+  }
 
-    return value.substring(2, 4);
+  double differentCalculateBmi({bool? gender, double? width, double? weight}) {
+    int number = 50;
+    number = gender == true ? number = 50 : 45;
+
+    double result = weight! / (width! * width);
+    String value = result.toString().substring(4,6);
+    double newVal=double.parse(value);
+    print("differentCalculateBmi: "+newVal.toString());
+    return newVal;
   }
 }
-// Column(
-//   children: [
-//     Text("KİLO: "+weight.roundToDouble().toString()),
-//     Text("BOY:  "+width.roundToDouble().toString()),
-//
-//     Text("Ideal : " +
-//         calculateIdealWeight(gender: false, width: width).toString()),
-//     Text("BMI: " +
-//         calculateBmi(gender: false, width: width, weight: weight).toString()),
-//     Opacity(
-//       opacity:0.5,
-//       child:  Text("Now you see me, now you don't!"),
-//     )
-//   ],
-// ),
+
+ String getBmiMessage(double value){
+  if(value>=40)
+      return MyValues.morbidObez;
+  if(value>=30)
+      return MyValues.obez;
+  if(value>=25)
+      return MyValues.fazlaKilo;
+  else
+      return MyValues.zayif;
+}
+
+String isMyWeightNormal(double value){
+  if(value>40){
+    print("M");return "Morbid Obez";
+  }
+  else if(value>30){ print("Obez");return "Obez";}
+  else if(value>25) {print("Fazla Kilo");return "Fazla Kilo";}
+  else{print("Zayif");return "Zayif";}
+}
