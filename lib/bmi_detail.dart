@@ -7,10 +7,9 @@ class BmiDetail extends StatefulWidget {
   String? bmiNumber;
   String? idealWeight;
   String? isMyWeightNormal;
+  Color? weightWarningColor;
 
- // const BmiDetail({Key? key}) : super(key: key);
-
-  BmiDetail({this.weightMessage, this.bmiNumber, this.idealWeight,this.isMyWeightNormal});
+  BmiDetail({this.weightMessage, this.bmiNumber, this.idealWeight,this.isMyWeightNormal,this.weightWarningColor});
 
   @override
   _BmiDetailState createState() => _BmiDetailState();
@@ -21,39 +20,52 @@ class _BmiDetailState extends State<BmiDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: Wrap(
-            runSpacing: 100,
-            children: [
-          buildText(),
-          buildInfoBox(),
-          buildMyVitals(),
-              Center(
-                child: SizedBox(
-                  child: IconButton(
-                      onPressed: () => Get.off(MyHomePage()),
-                      icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
-                ),
-              )
-
-
-        ]),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Wrap(
+              runSpacing: 50,
+              children: [
+            buildText(),
+            LayoutBuilder(builder: (context, BoxConstraints constraints)=>constraints.maxWidth>600?buildInfoBox(.9, .5):buildInfoBox(.9, .2)),
+            buildMyVitals(),
+            buildBackButton()
+          ]),
+        ),
       ),
     );
   }
 
-  Center buildMyVitals() {
+  Center buildBackButton() {
     return Center(
-            child: Wrap(
-              runSpacing: 20,
-              children: [
-                Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2"),
-                Text("Kilonuza göre sağlıklı Kilo değerleri : ${widget.idealWeight}"),
-                Text(widget.weightMessage!),
-              ],
+              child: SizedBox(
+                child: IconButton(
+                    onPressed: () => Get.off(MyHomePage()),
+                    icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
+              ),
+            );
+  }
+
+  Widget buildMyVitals() {
+    return Center(
+      child: Wrap(
+         direction: Axis.vertical,
+         spacing:10,
+        children: [
+          Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2",style: TextStyle(fontSize: 18),),
+          Text("Kilonuza göre sağlıklı Kilo değerleri : ${widget.idealWeight}",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+          Container(
+            width: MediaQuery.of(context).size.width*0.9,
+            child: Text(
+              widget.weightMessage!,
+              style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18),
+              maxLines:5,
+              overflow: TextOverflow.ellipsis,
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   AppBar buildAppBar() {
@@ -67,20 +79,17 @@ class _BmiDetailState extends State<BmiDetail> {
             icon: Icon(Icons.arrow_back),
             color: Colors.black,
           ),
-          Text(
-            "Back",
-            style: TextStyle(color: Colors.black),
-          ),
+          Text("Geri",style: TextStyle(color: Colors.black),),
         ],
       ),
     );
   }
 
-  Center buildInfoBox() {
+  Widget buildInfoBox(double width,double height) {
     return Center(
             child: SizedBox(
-              width: Get.width * 0.9,
-              height: Get.height * 0.2,
+              width: Get.width *width,
+              height: Get.height *height,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -93,21 +102,22 @@ class _BmiDetailState extends State<BmiDetail> {
                       offset: Offset(0, 3), // changes position of shadow
                     ),
                   ],
-                 // border: Border.all(color: Colors.black),
                 ),
                 child: Column(
+
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text( "VKİ' in", style: TextStyle(fontSize: 30, color: Colors.purple.shade900),),
-                    Text(widget.bmiNumber!,style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold,color: Colors.purple.shade800),),
-                    Text("kg/m2",style: TextStyle(color: Colors.purple.shade300),),
+                    Expanded(flex: 1,child: Text( "VKİ' in", style: TextStyle(fontSize: 30, color: Colors.purple.shade900),)),
+                    Expanded(flex: 2,child: Text(widget.bmiNumber!,style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.purple.shade800),)),
+                    Expanded(flex: 1,child: Text("kg/m2",style: TextStyle(color: Colors.purple.shade300),)),
                     Expanded(
+                      flex: 1,
                       child: RichText(
                         text: TextSpan(
                             style: TextStyle(fontSize: 14, color: Colors.black),
                             children: [
                               TextSpan(text: "Kilonuz ",style: TextStyle(fontSize: 20,color: Colors.purple.shade300)),
-                              TextSpan(text: widget.isMyWeightNormal,style: TextStyle(fontSize: 20,color: Colors.green)),
+                              TextSpan(text: widget.isMyWeightNormal,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: widget.weightWarningColor!=null?widget.weightWarningColor:Colors.black)),
                             ]),
                       ),
                     ),
@@ -117,7 +127,6 @@ class _BmiDetailState extends State<BmiDetail> {
             ),
           );
   }
-
   RichText buildText() {
     return RichText(
       text: TextSpan(

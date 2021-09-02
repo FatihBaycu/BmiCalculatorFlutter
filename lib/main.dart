@@ -1,5 +1,4 @@
 import 'package:bmi_calculator/my_values.dart';
-import 'package:bmi_calculator/slider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,9 +10,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       color: Colors.white,
       theme: ThemeData.light(),
-      title: 'VKİ Hesaplayıcı',
+      title: "VKİ Hesaplayıcı",
       home: MyHomePage(),
     );
   }
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Wrap(
           runSpacing: 30,
           children: <Widget>[
-            Padding(padding: const EdgeInsets.all(10.0), child: Text(MyValues.vkiNedir,style: TextStyle(fontSize: 14,color: Colors.blueGrey.shade400),),),
+            Padding(padding: const EdgeInsets.all(15.0), child: Text(MyValues.vkiNedir,style: TextStyle(fontSize: 18,color: Colors.blueGrey.shade400),),),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -61,30 +61,31 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(height: 50,),
             buildContainer(),
             buildContainerWidth(),
-            // SizedBox(width: Get.width,child:
-            //   SliderWidget(fullWidth:false,min: 0,max: 250,sliderHeight: 50,value: newValue,),),
-            buildButton(),
+
+            LayoutBuilder(builder: (context, BoxConstraints constraints)=>constraints.maxWidth>600?buildButton(0.9,0.2):buildButton(0.9,0.07)),
+            SizedBox(height: 100,)
           ],
         ),
       ),
     );
   }
 
-  Center buildButton() {
+  Center buildButton(double width,double height) {
     return Center(
               child: SizedBox(
-                width: Get.width*0.9,
-                height: Get.height*0.07,
+                width: Get.width*width,
+                height: Get.height*height,
                 child: ElevatedButton(
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(changeColor()),
                   ),
                   onPressed: (){
                     isMyWeightNormal(26);
                      Get.off(()=>BmiDetail(
-                       weightMessage: getBmiMessage(differentCalculateBmi(width: width,weight: weight,gender: isBlur)),
-                      bmiNumber:differentCalculateBmi(width: width,weight: weight,gender: isBlur).toString(),
-                      idealWeight: calculateIdealWeight(gender: isBlur,width: width),
-                      isMyWeightNormal: isMyWeightNormal(differentCalculateBmi(width: width,weight: weight,gender: isBlur)),
+                      weightMessage:    getBmiMessage(calculateBmi(width: width,weight: weight,gender: isBlur)),
+                      bmiNumber:        calculateBmi(width: width,weight: weight,gender: isBlur).toString(),
+                      idealWeight:      calculateIdealWeight(gender: isBlur,width: width),
+                      isMyWeightNormal: isMyWeightNormal(calculateBmi(width: width,weight: weight,gender: isBlur)),
+                       weightWarningColor: getWeightWarningColor(calculateBmi(width: width,weight: weight,gender: isBlur)),
                      ));
                   },
                   child: Row(
@@ -203,9 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Image.asset("assets/images/man.png")),), onTap: ()=>setState(()=>opacitySwap()));
   }
 
-  Color changeColor(){
-    return isBlur?Colors.blue:Colors.orange;
-  }
+  Color changeColor()=>isBlur?Colors.blue:Colors.orange;
 
   String calculateIdealWeight({bool? gender, double? width}) {
     int number = 50;
@@ -213,35 +212,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var result = number + 2.3 * ((width! / 2.54) - 60);
     String value = result.toString();
-    print("calculateIdealWeight: "+value.substring(0, 2));
     return value.substring(0, 2);
   }
 
   double calculateBmi({bool? gender, double? width, double? weight}) {
-    int number = 50;
-    number = gender == true ? number = 50 : 45;
-
-    double result = weight! / (width! * width);
-    String value = result.toString();
-    double newValue=double.parse(value.substring(3));
-    print("calculateBmi: "+value);
-    return newValue;
-    //return value.substring(2, 4);
-  }
-
-  double differentCalculateBmi({bool? gender, double? width, double? weight}) {
-    int number = 50;
-    number = gender == true ? number = 50 : 45;
+     int number=50;
+     number = gender == true ?number = 50 : 45;
 
     double result = weight! / (width! * width);
     String value = result.toString().substring(4,6);
     double newVal=double.parse(value);
-    print("differentCalculateBmi: "+newVal.toString());
     return newVal;
   }
 }
 
  String getBmiMessage(double value){
+   if(value<=0)
+     return MyValues.morbidObez;
   if(value>=40)
       return MyValues.morbidObez;
   if(value>=30)
@@ -252,11 +239,22 @@ class _MyHomePageState extends State<MyHomePage> {
       return MyValues.zayif;
 }
 
+ Color getWeightWarningColor(double value){
+   if(value<=0){return Colors.red;}
+   if(value>=40)
+    return Colors.red;
+  if(value>=30)
+    return Colors.redAccent.shade100;
+  if(value>=25)
+    return Colors.orange;
+  else
+    return Colors.green;
+}
+
 String isMyWeightNormal(double value){
-  if(value>40){
-    print("M");return "Morbid Obez";
-  }
-  else if(value>30){ print("Obez");return "Obez";}
-  else if(value>25) {print("Fazla Kilo");return "Fazla Kilo";}
-  else{print("Zayif");return "Zayif";}
+  if(value<=0){return "Morbid Obez";}
+  if(value>40){return "Morbid Obez";}
+  else if(value>30){ return "Obez";}
+  else if(value>25) {return "Fazla Kilo";}
+  else{return "Zayif";}
 }
