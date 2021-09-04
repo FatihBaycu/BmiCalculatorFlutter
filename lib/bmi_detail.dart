@@ -1,6 +1,5 @@
 import 'package:bmi_calculator/main.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class BmiDetail extends StatefulWidget {
   String? weightMessage;
@@ -16,8 +15,16 @@ class BmiDetail extends StatefulWidget {
 }
 
 class _BmiDetailState extends State<BmiDetail> {
+
+  late double screenWidth;
+  late double screenHeight;
+
   @override
   Widget build(BuildContext context) {
+
+    screenWidth=MediaQuery.of(context).size.width;
+    screenHeight=MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: buildAppBar(),
       body: SingleChildScrollView(
@@ -36,15 +43,17 @@ class _BmiDetailState extends State<BmiDetail> {
     );
   }
 
+
+
   Center buildBackButton() {
     return Center(
-              child: SizedBox(
-                child: IconButton(
-                    onPressed: () => Get.off(MyHomePage()),
-                    icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
+        child: SizedBox(
+          child: IconButton(
+             onPressed: () =>buildNavigatorOff(MyHomePage()),
+              icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
               ),
             );
-  }
+          }
 
   Widget buildMyVitals() {
     return Center(
@@ -55,7 +64,7 @@ class _BmiDetailState extends State<BmiDetail> {
           Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2",style: TextStyle(fontSize: 18),),
           Text("Kilonuza göre sağlıklı Kilo değerleri : ${widget.idealWeight}",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
           Container(
-            width: MediaQuery.of(context).size.width*0.9,
+            width: screenWidth*0.9,
             child: Text(
               widget.weightMessage!,
               style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18),
@@ -68,6 +77,10 @@ class _BmiDetailState extends State<BmiDetail> {
     );
   }
 
+  buildNavigatorOff(Widget Page){
+    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Page));
+  }
+
   AppBar buildAppBar() {
     return AppBar(
       shadowColor: Colors.transparent,
@@ -75,7 +88,7 @@ class _BmiDetailState extends State<BmiDetail> {
       title: Row(
         children: [
           IconButton(
-            onPressed: () => Get.off(MyHomePage()),
+            onPressed: () =>buildNavigatorOff(MyHomePage()),
             icon: Icon(Icons.arrow_back),
             color: Colors.black,
           ),
@@ -88,8 +101,8 @@ class _BmiDetailState extends State<BmiDetail> {
   Widget buildInfoBox(double width,double height) {
     return Center(
             child: SizedBox(
-              width: Get.width *width,
-              height: Get.height *height,
+              width: screenWidth*width,
+              height:screenHeight *height,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -111,7 +124,7 @@ class _BmiDetailState extends State<BmiDetail> {
                     Expanded(flex: 2,child: Text(widget.bmiNumber!,style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.purple.shade800),)),
                     Expanded(flex: 1,child: Text("kg/m2",style: TextStyle(color: Colors.purple.shade300),)),
                     Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: RichText(
                         text: TextSpan(
                             style: TextStyle(fontSize: 14, color: Colors.black),

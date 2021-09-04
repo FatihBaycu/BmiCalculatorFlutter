@@ -1,7 +1,6 @@
 import 'package:bmi_calculator/my_values.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
+import 'package:flutter/services.dart';
 import 'bmi_detail.dart';
 
 void main() {runApp(MyApp());}
@@ -9,7 +8,12 @@ void main() {runApp(MyApp());}
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       color: Colors.white,
       theme: ThemeData.light(),
@@ -29,14 +33,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
     bool isBlur=true;
   opacitySwap() {  isBlur = !isBlur;}
-  double width=170;
-  double weight=50;
+  double bodyWidth=160;
+  double bodyWeight=55;
   double newValue=0;
+
 
   var staticValues=MyValues();
 
+    late double screenWidth;
+    late double screenHeight;
+
   @override
   Widget build(BuildContext context){
+
+   screenWidth=MediaQuery.of(context).size.width;
+   screenHeight=MediaQuery.of(context).size.height;
+
+
     return Scaffold(
       appBar: buildAppBar(),
       body: buildBody(),
@@ -50,20 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Wrap(
           runSpacing: 30,
           children: <Widget>[
-            Padding(padding: const EdgeInsets.all(15.0), child: Text(MyValues.vkiNedir,style: TextStyle(fontSize: 18,color: Colors.blueGrey.shade400),),),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(MyValues.vkiNedir,style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,color: Colors.blueGrey.shade400),),
+            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildGestureDetectorMan(),
-                buildGestureDetectorVoman(),
+                  buildGestureDetectorMan(.4,.3),
+                  buildGestureDetectorVoman(.4,.3),
               ],
             ),
             SizedBox(height: 50,),
             buildContainer(),
             buildContainerWidth(),
-
-            LayoutBuilder(builder: (context, BoxConstraints constraints)=>constraints.maxWidth>600?buildButton(0.9,0.2):buildButton(0.9,0.07)),
-            SizedBox(height: 100,)
+            buildButton(0.9,0.07),
           ],
         ),
       ),
@@ -73,30 +87,39 @@ class _MyHomePageState extends State<MyHomePage> {
   Center buildButton(double width,double height) {
     return Center(
               child: SizedBox(
-                width: Get.width*width,
-                height: Get.height*height,
+                width: screenWidth*width,
+                height: screenHeight*height,
                 child: ElevatedButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(changeColor()),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(changeColor()),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: unChangeColor(),width: 3)
+                      )
+                    ),
+
                   ),
-                  onPressed: (){
-                    isMyWeightNormal(26);
-                     Get.off(()=>BmiDetail(
-                      weightMessage:    getBmiMessage(calculateBmi(width: width,weight: weight,gender: isBlur)),
-                      bmiNumber:        calculateBmi(width: width,weight: weight,gender: isBlur).toString(),
-                      idealWeight:      calculateIdealWeight(gender: isBlur,width: width),
-                      isMyWeightNormal: isMyWeightNormal(calculateBmi(width: width,weight: weight,gender: isBlur)),
-                       weightWarningColor: getWeightWarningColor(calculateBmi(width: width,weight: weight,gender: isBlur)),
-                     ));
-                  },
+                  onPressed: (){buttonPressed();},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("VKi Hesapla",style: TextStyle(fontSize: 20),),
+                      Text("VKi Hesapla",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                       Icon(Icons.arrow_right_alt),
                     ],
                   ),),
               ),
             );
+  }
+
+  buttonPressed(){
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BmiDetail(
+      weightMessage:    getBmiMessage(calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur)),
+      bmiNumber:        calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur).toString(),
+      idealWeight:      calculateIdealWeight(gender: isBlur,width: bodyWidth),
+      isMyWeightNormal: isMyWeightNormal(calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur)),
+      weightWarningColor: getWeightWarningColor(calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur)),
+    )));
   }
 
   AppBar buildAppBar() {
@@ -124,7 +147,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-
                     Expanded(
                       flex:1,
                       child: Column(
@@ -144,10 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
 
-                    Expanded( flex:5,child:
-                      Slider(value: width,min: 90, max: 220, divisions: 130, activeColor:changeColor(),
-                        onChanged: (double value)=>setState(()=>width = value),
-                        label: width.roundToDouble().toString(),),),
+                    Expanded(flex:5,child:Slider(
+                      value: bodyWidth,min: 90, max: 220, divisions: 130, activeColor:changeColor(),
+                        onChanged: (double value)=>setState(()=>bodyWidth = value),
+                        label: bodyWidth.roundToDouble().toString(),),),
                   ],
                 ),
               );
@@ -179,9 +201,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     Expanded(flex:5, child:
-                      Slider(value: weight, min: 30, max: 200, divisions: 200, activeColor:changeColor(),
-                      onChanged: (double value)=>setState(()=>weight = value),
-                      label: weight.roundToDouble().toString(),
+                      Slider(value: bodyWeight, min: 30, max: 200, divisions: 200, activeColor:changeColor(),
+                      onChanged: (double value)=>setState(()=>bodyWeight = value),
+                      label: bodyWeight.roundToDouble().toString(),
                       ),
                     ),
                   ],
@@ -189,22 +211,23 @@ class _MyHomePageState extends State<MyHomePage> {
               );
   }
 
-  GestureDetector buildGestureDetectorVoman() {
+  GestureDetector buildGestureDetectorVoman(double width,double height) {
     return GestureDetector(child:
-        Container(width: Get.width * 0.4, height: Get.height * 0.3, child:
+        Container(width: screenWidth * width, height: screenHeight * height, child:
           Opacity(opacity: !isBlur? 1.0 : 0.5, child:
             Image.asset("assets/images/voman.png")),),onTap: ()=>setState(()=>opacitySwap()),
     );
   }
 
-  GestureDetector buildGestureDetectorMan() {
+  GestureDetector buildGestureDetectorMan(double width,double height) {
     return GestureDetector(
-      child: Container(width: Get.width * 0.4, height: Get.height * 0.3, child:
+      child: Container(width: screenWidth * width, height: screenHeight* height, child:
        Opacity(opacity: isBlur ? 1.0 : 0.5,child:
         Image.asset("assets/images/man.png")),), onTap: ()=>setState(()=>opacitySwap()));
   }
 
-  Color changeColor()=>isBlur?Colors.blue:Colors.orange;
+  Color changeColor()=>isBlur?Colors.blueAccent.shade700:Colors.deepOrange;
+  Color unChangeColor()=>!isBlur?Colors.blueAccent.shade700:Colors.deepOrange;
 
   String calculateIdealWeight({bool? gender, double? width}) {
     int number = 50;
