@@ -4,5 +4,29 @@
   },
   "project": {
     "name":"Body Mass Index"
+    ,"back":"Back",
+    "whatIsBMI":"The calculation of body mass index (BMI) (BKI weight index) is used in the calculation of obesity.",
+    "mustBeWeight":"Healthy weight values according to your weight:",
+    "normalBMIValue":"Healthy BMI Value: 18.5 kg / m2 - 25 kg / m2",
+    "yourWeight":"Your weight ",
+    "yourBMI":"Your BMI :",
+    "your":"Your",
+    "values":"Values",
+    "weight":"Weight",
+    "width":"Width"
+  },
+    "resultDetail":{
+      "weak":"Under 18, 5 kg / m",
+      "normalWeight":"18.5 - 24, 9 kg / m.ones between: normal overweight",
+      "overweight":"25 to 29, 9 kg / m.ones between: overweight",
+      "obese":"30 to 39, 9 kg / m.ones between: obese",
+      "morbidlyObese":"The ones above 40 kg / m are: highly obese (morbid obese)."
+    },
+    "result":{
+      "weak":"Weak",
+      "normal":"Normal weight",
+      "owerweight":"Overweight",
+      "obese":"Obese",
+      "morbidlyObese":"Morbid Provide"
+    }  
   }
-}

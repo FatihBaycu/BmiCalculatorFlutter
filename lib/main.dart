@@ -1,9 +1,25 @@
-import 'package:bmi_calculator/my_values.dart';
+import 'dart:math';
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+import 'package:bmi_calculator/extensions/string_extensions.dart';
+import 'package:bmi_calculator/generated/locale_keys.g.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'bmi_detail.dart';
+import 'my_values.dart';
 
-void main() {runApp(MyApp());}
+void main()async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+
+  runApp(EasyLocalization(
+        child: MyApp(),
+      supportedLocales:[MyValues.TR_LOCALE,MyValues.EN_LOCALE,MyValues.DE_LOCALE],
+      // supportedLocales: MyValues.supportedLocale,
+      fallbackLocale: MyValues.EN_LOCALE,
+      path:MyValues.LANG_PATH));
+
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -14,10 +30,13 @@ class MyApp extends StatelessWidget {
     ]);
     SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return MaterialApp(
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       debugShowCheckedModeBanner: false,
       color: Colors.white,
       theme: ThemeData.light(),
-      title: "VKİ Hesaplayıcı",
+      title: LocaleKeys.myApp_calculateBMI.locale,
       home: MyHomePage(),
     );
   }
@@ -31,7 +50,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-    bool isBlur=true;
+  bool isBlur=true;
   opacitySwap() {  isBlur = !isBlur;}
   double bodyWidth=160;
   double bodyWeight=55;
@@ -42,6 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     late double screenWidth;
     late double screenHeight;
+
+
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context){
@@ -55,6 +81,27 @@ class _MyHomePageState extends State<MyHomePage> {
       body: buildBody(),
     );
   }
+    AppBar buildAppBar() {
+      return AppBar(
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.white30,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(LocaleKeys.myApp_calculateBMI.locale,style: TextStyle(fontSize: 30,color: changeColor())),
+            //Text("VKİ",style: TextStyle(fontSize: 30,color: changeColor()),),
+            //Text(" Hesaplayıcı",style: TextStyle(fontSize: 30,color: Colors.black),),
+          ],
+        ),
+        actions: [
+          TextButton(
+              onPressed: (){context.setLocale(MyValues.supportedLocale[Random().nextInt(MyValues.supportedLocale.length)]);},
+              child: Text(
+                context.locale.languageCode.toUpperCase(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)),
+
+        ],
+      );
+    }
 
   SingleChildScrollView buildBody() {
     return SingleChildScrollView(
@@ -65,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(MyValues.vkiNedir,style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,color: Colors.blueGrey.shade400),),
+              child: Text(LocaleKeys.project_whatIsBMI.locale,style: TextStyle(fontWeight: FontWeight.w400,fontSize: 16,color: Colors.blueGrey.shade400),),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,11 +147,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
 
                   ),
-                  onPressed: (){buttonPressed();},
+                  onPressed: (){
+// style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                    buttonPressed();},
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text("VKi Hesapla",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      //AppLocalizations.of(context).translate('second_string'),
+                      Text(LocaleKeys.myApp_calculateBMI.locale),
                       Icon(Icons.arrow_right_alt),
                     ],
                   ),),
@@ -122,19 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
     )));
   }
 
-  AppBar buildAppBar() {
-    return AppBar(
-      shadowColor: Colors.transparent,
-      backgroundColor: Colors.white30,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("VKİ",style: TextStyle(fontSize: 30,color: changeColor()),),
-          Text(" Hesaplayıcı",style: TextStyle(fontSize: 30,color: Colors.black),),
-        ],
-      ),
-    );
-  }
 
   Container buildContainerWidth() {
     return Container(
@@ -158,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             text: TextSpan(
                                 style: TextStyle(fontSize:14,color: Colors.black),
                                 children: [
-                              TextSpan(text: "Boy",style: TextStyle(color: Colors.purple)),
+                              TextSpan(text: LocaleKeys.project_width.locale,style: TextStyle(color: Colors.purple)),
                               TextSpan(text: " (cm)",style:TextStyle(color: changeColor())),
                             ]),
                           ),
@@ -193,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           RichText(text: TextSpan(
                                 style: TextStyle(fontSize:14,color: changeColor(),),
                                 children: [
-                                  TextSpan(text: "Kilo",style: TextStyle(color: Colors.purple)),
+                                  TextSpan(text:LocaleKeys.project_weight.locale,style: TextStyle(color: Colors.purple)),
                                   TextSpan(text: " (kg)",),
                                 ]),
                           ),
@@ -251,15 +288,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
  String getBmiMessage(double value){
    if(value<=0)
-     return MyValues.morbidObez;
+     return LocaleKeys.resultDetail_morbidlyObese.locale;
   if(value>=40)
-      return MyValues.morbidObez;
+      return LocaleKeys.resultDetail_morbidlyObese.locale;
   if(value>=30)
-      return MyValues.obez;
+      return LocaleKeys.resultDetail_obese.locale;
   if(value>=25)
-      return MyValues.fazlaKilo;
+      return LocaleKeys.resultDetail_overweight.locale;
   else
-      return MyValues.zayif;
+      return LocaleKeys.resultDetail_weak.locale;
 }
 
  Color getWeightWarningColor(double value){
@@ -275,9 +312,9 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 String isMyWeightNormal(double value){
-  if(value<=0){return "Morbid Obez";}
-  if(value>40){return "Morbid Obez";}
-  else if(value>30){ return "Obez";}
-  else if(value>25) {return "Fazla Kilo";}
-  else{return "Zayif";}
+  if(value<=0){return LocaleKeys.result_morbidlyObese.locale;}
+  if(value>40){return LocaleKeys.result_morbidlyObese.locale;}
+  else if(value>30){ return LocaleKeys.result_obese.locale;}
+  else if(value>25) {return LocaleKeys.result_owerweight.locale;}
+  else{return LocaleKeys.result_weak.locale;}
 }

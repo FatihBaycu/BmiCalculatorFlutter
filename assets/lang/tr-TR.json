@@ -3,6 +3,30 @@
     "calculateBMI": "VKİ Hesapla"
   },
   "project": {
-    "name":"Vücut Kitle İndeksi"
-  }
+    "name":"Vücut Kitle İndeksi",
+    "back":"Geri",
+    "whatIsBMI":"Obezitenin hesaplanmasında kişinin boy ve kilo değeri üzerinden yapılan Vücut Kitle İndeksi (VKİ) (Boy Kilo Endeksi) hesaplaması kullanılır.",
+    "mustBeWeight":"Kilonuza göre sağlıklı Kilo değerleri : ",
+    "normalBMIValue":"Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2",
+    "yourWeight":"Kilonuz ",
+    "yourBMI":"VKİ' in",
+    "your":"Senin",
+    "values":"Değerlerin",
+    "weight":"Kilo",
+    "width":"Boy"
+  },
+  "resultDetail":{
+    "weak":"18, 5 kg/m.'nin altında olanlar: Zayıf",
+    "normalWeight":"18.5 – 24, 9 kg/m. arasında olanlar: Normal kilolu",
+    "overweight":"25 – 29, 9 kg/m. arasında olanlar: Fazla kilolu",
+    "obese":"30 – 39, 9 kg/m. arasında olanlar: Obez",
+    "morbidlyObese":"40 kg/m.'nin üzerinde olanlar: İleri derecede obez (morbid obez), olarak görülür."
+  },
+  "result":{
+    "weak":"Zayıf",
+    "normal":"Normal Kilo",
+    "owerweight":"Fazla Kilo",
+    "obese":"Obez",
+    "morbidlyObese":"Morbid Obez"
+  }  
 }

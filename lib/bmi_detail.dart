@@ -1,5 +1,8 @@
+import 'package:auto_size_text_pk/auto_size_text_pk.dart';
+import 'package:bmi_calculator/generated/locale_keys.g.dart';
 import 'package:bmi_calculator/main.dart';
 import 'package:flutter/material.dart';
+import 'package:bmi_calculator/extensions/string_extensions.dart';
 
 class BmiDetail extends StatefulWidget {
   String? weightMessage;
@@ -43,62 +46,18 @@ class _BmiDetailState extends State<BmiDetail> {
     );
   }
 
-
-
-  Center buildBackButton() {
-    return Center(
-        child: SizedBox(
-          child: IconButton(
-             onPressed: () =>buildNavigatorOff(MyHomePage()),
-              icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
-              ),
-            );
-          }
-
-  Widget buildMyVitals() {
-    return Center(
-      child: Wrap(
-         direction: Axis.vertical,
-         spacing:10,
-        children: [
-          Text("Sağlıklı VKİ Değeri : 18.5 kg/m2 - 25 kg/m2",style: TextStyle(fontSize: 18),),
-          Text("Kilonuza göre sağlıklı Kilo değerleri : ${widget.idealWeight}",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-          Container(
-            width: screenWidth*0.9,
-            child: Text(
-              widget.weightMessage!,
-              style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18),
-              maxLines:5,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
+  RichText buildText() {
+    return RichText(
+      text: TextSpan(
+          style: TextStyle(fontSize: 14, color: Colors.black),
+          children: [
+            TextSpan( text: LocaleKeys.project_your.locale, style:TextStyle(fontSize: 30, color: Colors.deepPurple.shade300)),
+            TextSpan( text: " "+LocaleKeys.project_values.locale, style: TextStyle(fontSize: 30, color: Colors.black)),
+          ]),
     );
   }
 
-  buildNavigatorOff(Widget Page){
-    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Page));
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      shadowColor: Colors.transparent,
-      backgroundColor: Colors.white30,
-      title: Row(
-        children: [
-          IconButton(
-            onPressed: () =>buildNavigatorOff(MyHomePage()),
-            icon: Icon(Icons.arrow_back),
-            color: Colors.black,
-          ),
-          Text("Geri",style: TextStyle(color: Colors.black),),
-        ],
-      ),
-    );
-  }
-
-  Widget buildInfoBox(double width,double height) {
+ Widget buildInfoBox(double width,double height) {
     return Center(
             child: SizedBox(
               width: screenWidth*width,
@@ -120,7 +79,7 @@ class _BmiDetailState extends State<BmiDetail> {
 
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Expanded(flex: 1,child: Text( "VKİ' in", style: TextStyle(fontSize: 30, color: Colors.purple.shade900),)),
+                    Expanded(flex: 1,child: Text( LocaleKeys.project_yourBMI.locale,style: TextStyle(fontSize: 30, color: Colors.purple.shade900),)),
                     Expanded(flex: 2,child: Text(widget.bmiNumber!,style: TextStyle(fontSize: 50,fontWeight: FontWeight.bold,color: Colors.purple.shade800),)),
                     Expanded(flex: 1,child: Text("kg/m2",style: TextStyle(color: Colors.purple.shade300),)),
                     Expanded(
@@ -129,7 +88,7 @@ class _BmiDetailState extends State<BmiDetail> {
                         text: TextSpan(
                             style: TextStyle(fontSize: 14, color: Colors.black),
                             children: [
-                              TextSpan(text: "Kilonuz ",style: TextStyle(fontSize: 20,color: Colors.purple.shade300)),
+                              TextSpan(text: LocaleKeys.project_yourWeight.locale,style: TextStyle(fontSize: 20,color: Colors.purple.shade300)),
                               TextSpan(text: widget.isMyWeightNormal,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30,color: widget.weightWarningColor!=null?widget.weightWarningColor:Colors.black)),
                             ]),
                       ),
@@ -140,14 +99,65 @@ class _BmiDetailState extends State<BmiDetail> {
             ),
           );
   }
-  RichText buildText() {
-    return RichText(
-      text: TextSpan(
-          style: TextStyle(fontSize: 14, color: Colors.black),
-          children: [
-            TextSpan( text: "Senin", style:TextStyle(fontSize: 30, color: Colors.deepPurple.shade300)),
-            TextSpan( text: " Değerlerin", style: TextStyle(fontSize: 30, color: Colors.black)),
-          ]),
+
+
+  Widget buildMyVitals() {
+    return Center(
+      child: Wrap(
+         direction: Axis.vertical,
+         spacing:10,
+        children: [
+          Text(LocaleKeys.project_normalBMIValue.locale,style: TextStyle(fontSize: 18),),
+          AutoSizeText(LocaleKeys.project_mustBeWeight.locale+" ${widget.idealWeight}",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+          Container(
+            width: screenWidth*0.9,
+            child: Text(
+              widget.weightMessage!,
+              style: TextStyle(fontStyle: FontStyle.italic,fontSize: 18),
+              maxLines:5,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
+
+  Center buildBackButton() {
+    return Center(
+        child: SizedBox(
+          child: IconButton(
+             onPressed: () =>buildNavigatorOff(MyHomePage()),
+              icon: Icon(Icons.replay,color: Colors.purple.shade300,)),
+              ),
+            );
+          }
+
+
+  buildNavigatorOff(Widget Page){
+    return Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Page));
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      shadowColor: Colors.transparent,
+      backgroundColor: Colors.white30,
+      title: Row(
+        children: [
+          IconButton(
+            onPressed: () =>buildNavigatorOff(MyHomePage()),
+            icon: Icon(Icons.arrow_back),
+            color: Colors.black,
+          ),
+          Text(LocaleKeys.project_back.locale,style: TextStyle(color: Colors.black),),
+        ],
+      ),
+    );
+  }
+
+
+
+
+ 
+
 }
