@@ -1,0 +1,8 @@
+{
+  "myApp":{
+    "calculateBMI": "Calculate BMI"
+  },
+  "project": {
+    "name":"Body Mass Index"
+  }
+}
