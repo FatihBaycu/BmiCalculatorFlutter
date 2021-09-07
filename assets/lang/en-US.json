@@ -16,7 +16,7 @@
     "width":"Width"
   },
     "resultDetail":{
-      "weak":"Under 18, 5 kg / m",
+      "weak":"Under 18, 5 kg / m.ones between: weak",
       "normalWeight":"18.5 - 24, 9 kg / m.ones between: normal overweight",
       "overweight":"25 to 29, 9 kg / m.ones between: overweight",
       "obese":"30 to 39, 9 kg / m.ones between: obese",

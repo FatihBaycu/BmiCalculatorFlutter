@@ -16,7 +16,7 @@ void main()async{
         child: MyApp(),
       supportedLocales:[MyValues.TR_LOCALE,MyValues.EN_LOCALE,MyValues.DE_LOCALE],
       // supportedLocales: MyValues.supportedLocale,
-      fallbackLocale: MyValues.EN_LOCALE,
+      fallbackLocale: MyValues.TR_LOCALE,
       path:MyValues.LANG_PATH));
 
 }
@@ -163,6 +163,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   buttonPressed(){
+
+    //return print(isMyWeightNormal2(calculateBmi(gender: isBlur,weight: bodyWeight,width:bodyWidth)));
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>BmiDetail(
       weightMessage:    getBmiMessage(calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur)),
       bmiNumber:        calculateBmi(width: bodyWidth,weight: bodyWeight,gender: isBlur).toString(),
@@ -287,16 +289,12 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
  String getBmiMessage(double value){
-   if(value<=0)
-     return LocaleKeys.resultDetail_morbidlyObese.locale;
-  if(value>=40)
-      return LocaleKeys.resultDetail_morbidlyObese.locale;
-  if(value>=30)
-      return LocaleKeys.resultDetail_obese.locale;
-  if(value>=25)
-      return LocaleKeys.resultDetail_overweight.locale;
-  else
-      return LocaleKeys.resultDetail_weak.locale;
+  if(value<18.4)return LocaleKeys.resultDetail_weak.locale;
+  else if(value<24.9)return LocaleKeys.resultDetail_normalWeight.locale;
+  else if(value<29.9)return LocaleKeys.resultDetail_overweight.locale;
+  else if(value<34.9)return LocaleKeys.resultDetail_obese.locale;
+  else if(value<44.9)return LocaleKeys.resultDetail_morbidlyObese.locale;
+  else return LocaleKeys.resultDetail_morbidlyObese.locale; 
 }
 
  Color getWeightWarningColor(double value){
@@ -310,11 +308,11 @@ class _MyHomePageState extends State<MyHomePage> {
   else
     return Colors.green;
 }
-
 String isMyWeightNormal(double value){
-  if(value<=0){return LocaleKeys.result_morbidlyObese.locale;}
-  if(value>40){return LocaleKeys.result_morbidlyObese.locale;}
-  else if(value>30){ return LocaleKeys.result_obese.locale;}
-  else if(value>25) {return LocaleKeys.result_owerweight.locale;}
-  else{return LocaleKeys.result_weak.locale;}
+  if(value<18.4)     {return LocaleKeys.result_weak.locale;}
+  else if(value<24.9){return LocaleKeys.result_normal.locale;}
+  else if(value<29.9){return LocaleKeys.result_owerweight.locale;}
+  else if(value<34.9){return LocaleKeys.result_obese.locale;}
+  else if(value<44.9){return LocaleKeys.result_morbidlyObese.locale;}
+  else               {return LocaleKeys.result_morbidlyObese.locale;}
 }
