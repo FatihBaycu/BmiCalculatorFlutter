@@ -1,8 +1,9 @@
 import 'package:auto_size_text_pk/auto_size_text_pk.dart';
 import 'package:bmi_calculator/generated/locale_keys.g.dart';
-import 'package:bmi_calculator/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bmi_calculator/extensions/string_extensions.dart';
+
+import 'my_app.dart';
 
 class BmiDetail extends StatefulWidget {
   String? weightMessage;
